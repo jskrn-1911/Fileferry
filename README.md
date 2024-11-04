@@ -1,41 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Fileferry
+# File Transfer App
+## Overview
+
+Welcome to the File Transfer App! This web application allows users to easily and securely send files, photos, and videos to others without the hassle of email attachments or large file sizes. Inspired by popular file sharing platforms, our app offers a simple and intuitive interface for transferring files of various sizes.
+
+## Features
+
+- **Easy File Upload**: Users can upload files quickly and effortlessly.
+- **File Size Limits**: 
+  - Send files up to **250 MB ** available for 3 days without signing in.
+  - Send files up to **500 MB** available for 15 days when signed in.
+  - Premium users can send files up to **1 GB** available for 1 month.
+- **Secure Transfers**: Files are securely stored using AWS S3(implemented but not in use currently) and Cloudinary(in use).
+- **User Accounts**: Create an account to access additional features and manage your transfers.
+- **Premium Membership**: Upgrade to a premium account for increased file size limits and additional perks.
 
 ## Getting Started
 
-First, run the development server:
+To get started with the File Transfer App, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Visit the Website**: [willAddLaterWhenDeployed.com](#)
+2. **Upload Your Files**: Click on the upload button or drop you files and select the files you want to send.
+3. **Send the Link**: Once the upload is complete, you'll receive a link to share with the recipient.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Installation
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+If you want to run the app locally, follow these steps:
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
-#Fileferry
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/your-repo-name.git
+   cd Fileferry
+   npm install
+   npm run dev
