@@ -29,7 +29,7 @@ If you want to run the app locally, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
+   git clone https://github.com/jskrn-1911/Fileferry.git
    cd Fileferry
    npm install
    npm run dev
