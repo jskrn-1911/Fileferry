@@ -1,6 +1,6 @@
 # Fileferry
 ## File Transfer App
-## Overview
+### Overview
 
 Welcome to the File Transfer App! This web application allows users to easily and securely send files, photos, and videos to others without the hassle of email attachments or large file sizes. Inspired by popular file sharing platforms, our app offers a simple and intuitive interface for transferring files of various sizes.
 
