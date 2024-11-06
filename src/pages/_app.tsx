@@ -1,6 +1,29 @@
+import Header from "@/components/Header";
+import { AppProvider } from "@/contexts/AppContext";
 import "@/styles/globals.css";
+import { fetchDailyBackgrounds } from "@/utils/fetchDailyBackground";
 import type { AppProps } from "next/app";
+import { useEffect, useState } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  const [background, setBackground] = useState<string>("")
+
+  useEffect(() => {
+    const fetchBackgroundImage = async () => {
+      const background = await fetchDailyBackgrounds();
+      setBackground(background);
+    }
+    fetchBackgroundImage();
+  }, [])
+
+  return (
+    <AppProvider>
+      <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{backgroundImage: `url(${background})`}}>
+        <Header />
+        <main>
+          <Component {...pageProps} />
+        </main>
+      </div>
+    </AppProvider>
+  )
 }
