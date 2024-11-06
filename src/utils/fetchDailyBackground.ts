@@ -10,6 +10,7 @@ export const fetchDailyBackgrounds = async () => {
             throw new Error('Unsplash API rate limit exceeded');
         }
     } catch (error) {
+        console.log('Error fetching from Unsplash, falling back to Cloudinary...', error);
         const randomImage = cloudinaryImages[Math.floor(Math.random() * cloudinaryImages.length)];
         return randomImage; 
     }
