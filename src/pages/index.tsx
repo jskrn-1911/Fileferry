@@ -1,17 +1,8 @@
-import { fetchDailyBackgrounds } from "@/utils/fetchDailyBackground";
 import { NextPage } from "next";
-import { useEffect, useState } from "react";
 
 const Home: NextPage = () => {
-  const [backgroundImage, setBackgroundImage] = useState("")
 
-  useEffect(() => {
-    const getBackgroundImage = async () => {
-      const background = await fetchDailyBackgrounds()
-      setBackgroundImage(background)
-    }
-    getBackgroundImage();
-  }, [])
+  
   return (
     <div
       className="min-h-screen flex items-center justify-center">
