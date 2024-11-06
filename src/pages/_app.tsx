@@ -11,6 +11,7 @@ export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
     const fetchBackgroundImage = async () => {
       const background = await fetchDailyBackgrounds();
+      console.log(background)
       setBackground(background);
     }
     fetchBackgroundImage();
