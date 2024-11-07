@@ -4,8 +4,9 @@ import "@/styles/globals.css";
 import { fetchDailyBackgrounds } from "@/utils/fetchDailyBackground";
 import type { AppProps } from "next/app";
 import { useEffect, useState } from "react";
+import { SessionProvider } from 'next-auth/react'
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: {session, ...pageProps} }: AppProps) {
   const [background, setBackground] = useState<string>("")
 
   useEffect(() => {
@@ -18,13 +19,15 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [])
 
   return (
-    <AppProvider>
-      <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{backgroundImage: `url(${background})`}}>
-        <Header />
-        <main>
-          <Component {...pageProps} />
-        </main>
-      </div>
-    </AppProvider>
+    <SessionProvider session={session}>
+      <AppProvider>
+        <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${background})` }}>
+          <Header />
+          <main>
+            <Component {...pageProps} />
+          </main>
+        </div>
+      </AppProvider>
+    </SessionProvider>
   )
 }

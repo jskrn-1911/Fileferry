@@ -1,8 +1,14 @@
 import React, { useContext, createContext, ReactNode, useState } from 'react';
 
+interface User {
+    name: string;
+    email: string,
+    image: string,
+}
+
 interface AppContextType {
-    user: string | null;
-    setUser: (user: string | null) => void;
+    user: User | null;
+    setUser: (user: User | null) => void;
     isAuthenticated: boolean;
     setIsAuthenticated: (status: boolean) => void;
     loggedIn: boolean;
@@ -12,7 +18,7 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode}> = ({ children }) => {
-    const [user, setUser] = useState<string | null>(null);
+    const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
