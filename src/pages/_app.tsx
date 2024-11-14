@@ -10,24 +10,10 @@ import Head from "next/head";
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const [background, setBackground] = useState<string>("")
 
-  //   useEffect(() => {
-  //     const fetchBackgroundImage = async () => {
-  //         const background = await fetchDailyBackgrounds();
-  //         console.log(background);
-  //         setBackground(background);
-  //     };
-
-  //     fetchBackgroundImage();
-
-  //     const intervalId = setInterval(fetchBackgroundImage, 120000);
-
-  //     return () => clearInterval(intervalId);
-  // }, []);
-
   useEffect(() => {
     const fetchBackgroundImage = async () => {
       const background = await fetchDailyBackgrounds();
-      console.log(background)
+      // console.log(background)
       setBackground(background);
     }
     fetchBackgroundImage();
