@@ -1,4 +1,4 @@
-import { cloudinaryImages } from "@/assets/cloudinaryUmages";
+import { cloudinaryImages } from "@/assets/cloudinaryImages";
 
 export const fetchDailyBackgrounds = async () => {
     try {
