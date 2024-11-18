@@ -2,7 +2,6 @@ import { useAppContext } from "@/contexts/AppContext";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import { GiCargoShip } from "react-icons/gi";
 import { IoCloseOutline, IoMenuOutline } from "react-icons/io5";
 
@@ -52,7 +51,7 @@ const Header: React.FC = () => {
         <>
             <header className="bg-transparent py-2 px-4 flex justify-between items-center relative">
                 <div className="left-part md:hidden ">
-                    <div className="hambuger_icon flex w-[28px]" onClick={toggleMenu}>
+                    <div className="hamburger_icon flex w-[28px]" onClick={toggleMenu}>
                         {isMenuOpen ? <IoCloseOutline className="w-full h-full" /> : <IoMenuOutline className="w-full h-full" />}
 
                     </div>
