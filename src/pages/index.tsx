@@ -7,8 +7,14 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <meta name="description" content="FileFerry - A secure and easy-to-use platform for sending and sharing files. Upload and share files seamlessly with FileFerry." />
-        <meta name="keywords" content="file transfer, file sharing, send files, upload files, FileFerry" />
+        <Head>
+          <title>FileFerry - Effortless File Sharing and Transfer</title>
+          <meta name="description" content="FileFerry makes file sharing seamless and secure. Send, upload, and share files with ease. Try FileFerry for a smooth and reliable file transfer experience." />
+          <meta name="keywords" content="file transfer, file sharing, upload files, send files online, secure file sharing, FileFerry app" />
+          <meta name="author" content="FileFerry Team" />
+          <meta name="robots" content="index, follow" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        </Head>
       </Head>
       <div
         className="min-h-screen flex items-center justify-center">

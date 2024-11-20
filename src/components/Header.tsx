@@ -3,6 +3,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
+import { BsThreeDotsVertical } from "react-icons/bs";
 import { GiCargoShip } from "react-icons/gi";
 import { IoCloseOutline, IoMenuOutline } from "react-icons/io5";
 
@@ -52,8 +53,8 @@ const Header: React.FC = () => {
         <>
             <header className="bg-transparent py-2 px-4 flex justify-between items-center relative">
                 <div className="left-part md:hidden ">
-                    <div className="hamburger_icon flex w-[28px]" onClick={toggleMenu}>
-                        {isMenuOpen ? <IoCloseOutline className="w-full h-full" /> : <IoMenuOutline className="w-full h-full" />}
+                    <div className="hamburger_icon flex w-[32px]" onClick={toggleMenu}>
+                        {isMenuOpen ? <IoCloseOutline size={24} className="w-full h-full p-1" /> : <IoMenuOutline size={24} className="w-full h-full p-1" />}
 
                     </div>
                     <div className={` ${isMenuOpen ? "flex" : "hidden"} absolute left-0 flex top-full mt-[10px]  p-0 w-full`}>
@@ -83,9 +84,9 @@ const Header: React.FC = () => {
                             {/* {isAuthenticated && <li className="text-slate-950 ">Upgrade</li>} */}
                         </ul>
                     </div>
-                    <div className="flex md:bg-white px-1 py-1 rounded-md items-center md:shadow-md relative">
+                    <div className="flex md:bg-white px-1 py-1 ps-2 rounded-md items-center md:shadow-md relative">
                         {isAuthenticated ? (
-                            <div className="relative flex items-center cursor-pointer ps-4 pe-1" onClick={toggleDropdown}>
+                            <div className="relative flex items-center cursor-pointer" onClick={toggleDropdown}>
                                 <span className="text-slate-950 ps-0 text-sm hidden md:inline truncate">Hey, {user?.name}</span>
                                 <Image
                                     src={user?.image || '/default-profile.jpg'}
@@ -95,7 +96,7 @@ const Header: React.FC = () => {
                                     loading="lazy"
                                     className="md:ms-2 rounded-md border-[0.5px] border-solid border-white"
                                 />
-                                {/* <BsThreeDotsVertical size={20} className="text-slate-950 ps-1 m-0" /> */}
+                                <BsThreeDotsVertical size={20} className="text-slate-950 ps-1 m-0" />
                             </div>
                         ) : (
                             <div className="flex flex-row py-1">
