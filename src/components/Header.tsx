@@ -1,6 +1,7 @@
 import { useAppContext } from "@/contexts/AppContext";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { GiCargoShip } from "react-icons/gi";
 import { IoCloseOutline, IoMenuOutline } from "react-icons/io5";
@@ -57,22 +58,29 @@ const Header: React.FC = () => {
                     </div>
                     <div className={` ${isMenuOpen ? "flex" : "hidden"} absolute left-0 flex top-full mt-[10px]  p-0 w-full`}>
                         <ul className="flex items-center flex-col w-full justify-center gap-x-3 text-sm bg-white rounded-md mx-4 p-[10px]">
-                            <li className="p-[10px] w-full  border-b-[1px] border-b-[#f1f1f1]">About</li>
-                            <li className="p-[10px] w-full  border-b-[1px] border-b-[#f1f1f1]">Service</li>
-                            <li className="p-[10px] w-full">Contact</li>
+                            <li className="p-[10px] w-full  border-b-[1px] text-slate-950 border-b-[#f1f1f1]"><Link href="/about">About</Link></li>
+                            <li className="p-[10px] w-full  border-b-[1px] text-slate-950 border-b-[#f1f1f1]"><Link href="/services">Service</Link></li>
+                            <li className="p-[10px] w-full text-slate-950"><Link href="upgrade">Upgrade</Link></li>
+                            <li className="p-[10px] w-full text-slate-950"><Link href="contact">Contact</Link></li>
                         </ul>
                     </div>
                 </div>
                 <div className="flex items-center" style={{ textShadow: "0px 0px 10px rgba(0,0,0,0.8)" }}>
-                    <span className="p-1 text-white text-2xl font-semibold">FileFerry</span>
-                    <GiCargoShip color="white" size={24} className="shadow-md md:text-white text-black" />
+                    <Link href="/">
+                        <span className="p-1 text-white text-2xl font-semibold cursor-pointer">FileFerry</span>
+                    </Link>
+                    <Link href="/">
+                    <GiCargoShip color="white" size={24} className="shadow-md md:text-white text-black cursor-pointer" />
+                    </Link>
                 </div>
                 <div className="flex ">
                     <div className="hidden md:flex bg-white rounded-md me-4 px-4">
                         <ul className="flex items-center justify-center gap-x-3 text-sm ">
-                            <li>About</li>
-                            <li>Service</li>
-                            <li>Contact</li>
+                            <li className="text-slate-950 "><Link href="/about">About</Link></li>
+                            <li className="text-slate-950 "><Link href="/services">Service</Link></li>
+                            <li className="text-slate-950 "><Link href="upgrade">Upgrade</Link></li>
+                            <li className="text-slate-950 "><Link href="contact">Contact</Link></li>
+                            {/* {isAuthenticated && <li className="text-slate-950 ">Upgrade</li>} */}
                         </ul>
                     </div>
                     <div className="flex md:bg-white px-1 py-1 rounded-md items-center md:shadow-md relative">
