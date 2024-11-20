@@ -58,9 +58,10 @@ const Header: React.FC = () => {
                     </div>
                     <div className={` ${isMenuOpen ? "flex" : "hidden"} absolute left-0 flex top-full mt-[10px]  p-0 w-full`}>
                         <ul className="flex items-center flex-col w-full justify-center gap-x-3 text-sm bg-white rounded-md mx-4 p-[10px]">
-                            <li className="p-[10px] w-full  border-b-[1px] text-slate-950 border-b-[#f1f1f1]">About</li>
-                            <li className="p-[10px] w-full  border-b-[1px] text-slate-950 border-b-[#f1f1f1]">Service</li>
-                            <li className="p-[10px] w-full text-slate-950">Contact</li>
+                            <li className="p-[10px] w-full  border-b-[1px] text-slate-950 border-b-[#f1f1f1]"><Link href="/about">About</Link></li>
+                            <li className="p-[10px] w-full  border-b-[1px] text-slate-950 border-b-[#f1f1f1]"><Link href="/services">Service</Link></li>
+                            <li className="p-[10px] w-full text-slate-950"><Link href="upgrade">Upgrade</Link></li>
+                            <li className="p-[10px] w-full text-slate-950"><Link href="contact">Contact</Link></li>
                         </ul>
                     </div>
                 </div>
@@ -75,9 +76,10 @@ const Header: React.FC = () => {
                 <div className="flex ">
                     <div className="hidden md:flex bg-white rounded-md me-4 px-4">
                         <ul className="flex items-center justify-center gap-x-3 text-sm ">
-                            <li className="text-slate-950 ">About</li>
-                            <li className="text-slate-950 ">Service</li>
-                            <li className="text-slate-950 ">Contact</li>
+                            <li className="text-slate-950 "><Link href="/about">About</Link></li>
+                            <li className="text-slate-950 "><Link href="/services">Service</Link></li>
+                            <li className="text-slate-950 "><Link href="upgrade">Upgrade</Link></li>
+                            <li className="text-slate-950 "><Link href="contact">Contact</Link></li>
                             {/* {isAuthenticated && <li className="text-slate-950 ">Upgrade</li>} */}
                         </ul>
                     </div>
