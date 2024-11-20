@@ -20,9 +20,9 @@ export default function Document() {
               ],
               contactPoint: {
                 "@type": "ContactPoint",
-                telephone: "+97087496301",
+                telephone: "+917087496301",
                 contactType: "Customer Support",
-                areaServed: "US",
+                areaServed: "INDIA",
                 availableLanguage: "English"
               }
             }),
