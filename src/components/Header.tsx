@@ -3,7 +3,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
-import { BsThreeDotsVertical } from "react-icons/bs";
+// import { BsThreeDotsVertical } from "react-icons/bs";
 import { GiCargoShip } from "react-icons/gi";
 import { IoCloseOutline, IoMenuOutline } from "react-icons/io5";
 
@@ -96,7 +96,7 @@ const Header: React.FC = () => {
                                     loading="lazy"
                                     className="md:ms-2 rounded-md border-[0.5px] border-solid border-white"
                                 />
-                                <BsThreeDotsVertical size={20} className="text-slate-950 ps-1 m-0" />
+                                {/* <BsThreeDotsVertical size={20} className="text-slate-950 ps-1 m-0" /> */}
                             </div>
                         ) : (
                             <div className="flex flex-row py-1">

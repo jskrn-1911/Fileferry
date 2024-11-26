@@ -1,3 +1,5 @@
+import Ads from "@/components/Ads";
+import FileUploader from "@/components/FileUploader";
 import { NextPage } from "next";
 import Head from "next/head";
 
@@ -16,13 +18,14 @@ const Home: NextPage = () => {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </Head>
       </Head>
-      <div
-        className="min-h-screen flex items-center justify-center">
-        <div className="text-center text-white px-4 md:px-10">
-          <h1 className="text-4xl font-semibold">Welcome to FileFerry 🚢</h1>
-          <h3 className="mt-2 text-xl">A file transferring app.</h3>
+      <main className="main_div min-h-[90vh] py-2 px-4 grid grid-cols-12 gap-5">
+        <div className='col-span-12  order-1 md:col-span-4  md:order-1 h-full '>
+          <FileUploader />
         </div>
-      </div>
+        <div className=" col-span-12 order-2 md:col-span-8 md:order-2 h-full">
+          <Ads />
+        </div>
+      </main>
     </>
   )
 }
