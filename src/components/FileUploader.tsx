@@ -1,19 +1,19 @@
 
-import React, { useState } from 'react'
+// import React, { useState } from 'react'
 
-type FileType = File & { preview?: string };
+// type FileType = File & { preview?: string };
 
-interface UploadProgress {
-    [key: string]: number;
-}
+// interface UploadProgress {
+//     [key: string]: number;
+// }
 
 const FileUploader: React.FC = () => {
-    const [files, setFiles] = useState<FileType[]>([]);
-    const [emailTo, setEmailTo] = useState<string>('');
-    const [yourEmail, setYourEmail] = useState<string>('');
-    const [title, setTitle] = useState<string>('');
-    const [message, setMessage] = useState<string>('');
-    const [step, setStep] = useState<'initial' | 'uploading' | 'done'>('initial');
+    // const [files, setFiles] = useState<FileType[]>([]);
+    // const [emailTo, setEmailTo] = useState<string>('');
+    // const [yourEmail, setYourEmail] = useState<string>('');
+    // const [title, setTitle] = useState<string>('');
+    // const [message, setMessage] = useState<string>('');
+    // const [step, setStep] = useState<'initial' | 'uploading' | 'done'>('initial');
     return (
         <div className='px-14 py-14  h-full w-full text-slate-950'>
             <div className="max-w-sm w-full bg-white p-6 rounded-lg shadow-md space-y-6">
