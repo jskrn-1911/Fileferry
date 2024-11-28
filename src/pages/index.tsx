@@ -18,12 +18,14 @@ const Home: NextPage = () => {
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         </Head>
       </Head>
-      <main className="main_div min-h-[90vh] py-2 px-4 grid grid-cols-12 gap-5">
-        <div className='col-span-12  order-1 md:col-span-4  md:order-1 h-full '>
-          <FileUploader />
-        </div>
-        <div className=" col-span-12 order-2 md:col-span-8 md:order-2 h-full">
-          <Ads />
+      <main className="main_div min-h-[90vh] py-2 px-4 flex items-center justify-center">
+        <div className="grid grid-cols-12 gap-5 w-full">
+          <div className='col-span-12  order-1 lg:col-span-4 md:col-span-5  md:order-1 h-full'>
+            <FileUploader />
+          </div>
+          <div className="col-span-12 order-2 lg:col-span-8 md:col-span-7 md:order-2 h-full">
+            <Ads />
+          </div>
         </div>
       </main>
     </>

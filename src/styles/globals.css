@@ -42,6 +42,7 @@ body {
   height: 10px;
   margin: 0 5px;
   background-color: #020617;
+  /* opacity: 10; */
   border-radius: 5px;
   animation: loading-wave-animation 1s ease-in-out infinite;
 }
@@ -72,4 +73,23 @@ body {
   }
 }
 
+.box-data-container::-webkit-scrollbar {
+  width: 5px;
+}
+.box-data-container::-webkit-scrollbar-track {
+  background: transparent; 
+}
+.box-data-container::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #d5d3d4; 
+}
+.box-data-container::-webkit-scrollbar-thumb:hover {
+  background: #b9b9b9; 
+}
+
+@media (max-width:767px){
+  body{
+    overflow: auto;
+  }
+}
 
