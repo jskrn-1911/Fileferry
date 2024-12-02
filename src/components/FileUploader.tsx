@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React, { useCallback, useState } from 'react'
 import { ProgressBar } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
-import { AiOutlineClose } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlineCopy, AiOutlineDownload } from 'react-icons/ai';
 import { IoMdCloudDone } from 'react-icons/io';
 import { LuPlus } from 'react-icons/lu';
 
@@ -22,6 +22,8 @@ const FileUploader: React.FC = () => {
     const [isDragging, setIsDragging] = useState<boolean>(false)
     const [uploadProgress, setUploadProgress] = useState<UploadProgress>({})
     const [step, setStep] = useState<'initial' | 'uploading' | 'done'>('initial');
+    const [downloadFileUrls, setDownloadFileUrls] = useState<string[]>([]);
+    const [overallProgress, setOverallProgress] = useState<number>(0)
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
@@ -39,32 +41,97 @@ const FileUploader: React.FC = () => {
         onDragLeave,
     })
 
-    // const handleTransfer = async () => {
-    //    setStep('uploading')
-    //    setTimeout(() => {
-    //      setStep('done')
-    //    },2000)
-    // }
 
     const handleTransfer = async () => {
+        if (files.length === 0) {
+            alert("Please add files to upload.");
+            return;
+        }
+        if (!emailTo || !yourEmail || !title) {
+            alert("Please fill in all required fields");
+            return;
+        }
+
         setStep("uploading");
+        const totalFiles = files.length;
+        const progressMap = Array(totalFiles).fill(0);
 
-        // Simulate file upload progress
-        const files = ["file1", "file2", "file3"]; // Example file keys
-        files.forEach((file, index) => {
-            setTimeout(() => {
-                setUploadProgress((prevProgress) => ({
-                    ...prevProgress,
-                    [file]: (index + 1) * 33, // Simulate progressive updates
-                }));
-            }, index * 1000); // Update every second
-        });
+        try {
+            const uploadPromises = files.map((file, index) =>
+                new Promise<string>(async (resolve, reject) => {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", "file_upload_preset");
 
-        setTimeout(() => {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", `https://api.cloudinary.com/v1_1/dzwusi03f/upload`);
+
+                    xhr.upload.onprogress = (event) => {
+                        const progress = Math.round(
+                            (event.loaded * 100) / (event.total || 1)
+                        );
+
+                        progressMap[index] = progress;
+
+                        const overallProgress = Math.round(
+                            progressMap.reduce((acc, curr) => acc + curr, 0) / totalFiles
+                        );
+
+                        setOverallProgress(overallProgress);
+
+                        setUploadProgress((prev) => ({
+                            ...prev,
+                            [file.name]: progress,
+                        }));
+                    };
+
+                    xhr.onload = () => {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            resolve(response.secure_url);
+                        } else {
+                            reject(xhr.statusText);
+                        }
+                    };
+
+                    xhr.onerror = () => reject("Upload failed");
+                    xhr.send(formData);
+                })
+            );
+
+            const uploadedFiles: string[] = await Promise.all(uploadPromises);
+
+            console.log("Uploaded Files:", uploadedFiles);
+            setDownloadFileUrls(uploadedFiles)
             setStep("done");
             setUploadProgress({});
-        }, files.length * 1000 + 1000); // Wait until all updates are simulated
+            setFiles([]);
+            setOverallProgress(0);
+        } catch (error) {
+            console.error("Error uploading files:", error);
+            alert("Failed to upload files. Please try again.");
+            setStep("initial");
+        }
     };
+
+
+    // // Simulate file upload progress
+    // const handleTransfer = async () => {
+    //     setStep("uploading");
+    //     const files = ["file1", "file2", "file3"]; 
+    //     files.forEach((file, index) => {
+    //         setTimeout(() => {
+    //             setUploadProgress((prevProgress) => ({
+    //                 ...prevProgress,
+    //                 [file]: (index + 1) * 33, 
+    //             }));
+    //         }, index * 1000); 
+    //     });
+    //     setTimeout(() => {
+    //         setStep("done");
+    //         setUploadProgress({});
+    //     }, files.length * 1000 + 1000); 
+    // };
 
     const removeFile = (fileName: string) => {
         setFiles((files) => files.filter((file) => file.name !== fileName))
@@ -79,6 +146,11 @@ const FileUploader: React.FC = () => {
         setMessage('');
         setUploadProgress({});
     }
+
+    const truncateFileName = (name: string) => {
+        const maxLength = 20;
+        return name.length <= maxLength ? name : `${name.substr(0, maxLength)}...`;
+    };
 
     return (
         <div className='md:ps-14 xl:pe-14 md:pe-0 px-0 flex items-center justify-center  py-14  h-full w-full text-slate-950'>
@@ -172,6 +244,11 @@ const FileUploader: React.FC = () => {
                 <div className="w-full max-w-[300px] p-5 bg-white shadow-lg rounded-md cursor-pointer">
                     <div className="box-data-container p-1 h-[310px] overflow-y-auto">
                         <div className="flex flex-col items-center justify-center min-h-[341px] text-center">
+                            <ProgressBar
+                                now={overallProgress}
+                                label={`${Math.round(overallProgress)}%`}
+                                className="w-full bg-gray-300 text-xs text-gray-700 mb-4"
+                            />
                             <div className="w-16 h-16 border-4 border-gray-700 rounded-full animate-spin mb-4"></div>
                             <p className="mb-4">Uploading...</p>
                             <div className="w-full max-h-40 overflow-y-auto space-y-2">
@@ -201,17 +278,26 @@ const FileUploader: React.FC = () => {
                             <p className="text-gray-700 underline" onClick={sendAnother}>Send another?</p>
                         </Link>
                         <div className="w-full max-h-40 overflow-y-auto space-y-2">
-                            {/* {fileKeys.map((key, index) => (
-                                    <div key={index} className="flex justify-between items-center">
-                                        <span className="truncate">{truncateFileName(key.split('/').pop()!)}</span>
-                                        <button
-                                            className="text-gray-500"
-                                            onClick={() => downloadFile(key, key.split('/').pop()!)}
-                                        >
-                                            <AiOutlineDownload />
-                                        </button>
-                                    </div>
-                                ))} */}
+                            {downloadFileUrls.map((key, index) => (
+                                <div key={index} className="flex justify-between items-center space-x-2">
+                                    <span className="truncate">{truncateFileName(key.split('/').pop()!)}</span>
+                                    <button
+                                        className="text-gray-500"
+                                    // onClick={() => downloadFile(key, key.split('/').pop()!)}
+                                    >
+                                        <AiOutlineDownload />
+                                    </button>
+                                    <button
+                                        className="text-gray-500"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(key);
+                                            alert('Link copied to clipboard!'); // Optional: Confirmation
+                                        }}
+                                    >
+                                        <AiOutlineCopy />
+                                    </button>
+                                </div>
+                            ))}
                         </div>
                         <div className="w-full">
                             <button
