@@ -4,6 +4,7 @@ interface User {
     name: string;
     email: string,
     image: string,
+    isPremium: boolean,
 }
 
 interface AppContextType {
