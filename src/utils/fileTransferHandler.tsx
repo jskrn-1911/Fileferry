@@ -16,6 +16,7 @@ export const handleTransfer = async (
         return;
     }
     if (!emailTo || !yourEmail || !title) {
+        console.log(emailTo, yourEmail, title)
         alert('Please fill in all required fields');
         return;
     }
