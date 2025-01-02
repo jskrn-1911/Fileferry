@@ -186,13 +186,13 @@ const FileUploader: React.FC = () => {
                                             className="text-slate-950 cursor-pointer"
                                             onClick={() => removeFile(file.name)}
                                         />
-                                        {uploadProgress[file.name] && (
+                                        {/* {uploadProgress[file.name] && (
                                             <ProgressBar
                                                 now={uploadProgress[file.name]}
                                                 label={`${uploadProgress[file.name]}%`}
                                                 className="w-full bg-gray-300 text-xs text-gray-700"
                                             />
-                                        )}
+                                        )} */}
                                     </div>
                                 ))}
                             </div>
@@ -249,7 +249,7 @@ const FileUploader: React.FC = () => {
                                 label={`${Math.round(overallProgress)}%`}
                                 className="w-full bg-gray-300 text-xs text-gray-700 mb-4"
                             />
-                            <div className="w-16 h-16 border-4 border-gray-700 rounded-full animate-spin mb-4"></div>
+                            {/* <div className="w-16 h-16 border-4 border-gray-700 rounded-full animate-spin mb-4"></div> */}
                             <p className="mb-4">Uploading...</p>
                             <div className="w-full max-h-40 overflow-y-auto space-y-2">
                                 {Object.keys(uploadProgress).map((fileName) => (
