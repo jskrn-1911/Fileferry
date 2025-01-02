@@ -24,15 +24,15 @@ const FileUploader: React.FC = () => {
 
     const [files, setFiles] = useState<FileType[]>([]);
     const [emailTo, setEmailTo] = useState<string>('');
-    const [yourEmail, setYourEmail] = useState<string>('');
+    const [yourEmail, setYourEmail] = useState<string>(session?.user?.email || '');
     const [title, setTitle] = useState<string>('');
     const [message, setMessage] = useState<string>('');
-    
+
     const [uploadProgress, setUploadProgress] = useState<UploadProgress>({})
     const [overallProgress, setOverallProgress] = useState<number>(0)
 
     const [downloadFileUrls, setDownloadFileUrls] = useState<string[]>([]);
-    
+
     const [errorMessage, setErrorMessage] = useState<string>('');
 
     const [verificationCode, setVerificationCode] = useState<string>('');
@@ -96,14 +96,14 @@ const FileUploader: React.FC = () => {
         } catch (error) {
             setErrorMessage('Failed to send verification code.');
             console.log("Error:", error)
-        } finally{
+        } finally {
             setLoading(false)
         }
     };
 
     const handleVerifyCode = () => {
         if (enteredCode === verificationCode) {
-            handleTransfer( files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
+            handleTransfer(files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
         } else {
             setErrorMessage('Incorrect verification code.');
         }
@@ -129,7 +129,12 @@ const FileUploader: React.FC = () => {
             return;
         }
 
-        handleTransfer( files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
+        if (!yourEmail) {
+            console.log("your email is not entered.")
+            // setYourEmail(session?.user?.email)
+        }
+
+        handleTransfer(files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
     }
 
     const removeFile = (fileName: string) => {
@@ -305,7 +310,7 @@ const FileUploader: React.FC = () => {
                 </div>
             )}
             {step === 'done' && (
-                <div className="w-full max-w-[300px] p-5 bg-white shadow-lg rounded-md cursor-pointer">
+                <div className="w-full max-w-[300px] p-5 bg-white shadow-lg rounded-md cursor-pointer  overflow-y-auto">
                     <div className="flex flex-col items-center justify-center min-h-[341px] text-center space-y-4">
                         <IoMdCloudDone className="text-6xl text-gray-700" />
                         <p className="text-lg">Youre done!</p>
