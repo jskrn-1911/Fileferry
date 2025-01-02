@@ -19,7 +19,8 @@ const Header: React.FC = () => {
             setUser({
                 name: session.user.name || "",
                 email: session.user.email || "",
-                image: session.user.image || ""
+                image: session.user.image || "",
+                isPremium: false
             });
             setIsAuthenticated(true);
             localStorage.setItem("user", JSON.stringify(session.user));
@@ -137,7 +138,7 @@ const Header: React.FC = () => {
                         onClick={() => signOut()}
                         className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-100 transition"
                     >
-                        Sign Out
+                        Log Out
                     </button>
                 </div>
             )}

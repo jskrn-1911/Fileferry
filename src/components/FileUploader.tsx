@@ -1,11 +1,14 @@
-
 import Link from 'next/link';
 import React, { useCallback, useState } from 'react'
-import { ProgressBar } from 'react-bootstrap';
+import { handleTransfer } from '@/utils/fileTransferHandler';
+import { signIn, useSession } from 'next-auth/react';
 import { useDropzone } from 'react-dropzone';
 import { AiOutlineClose, AiOutlineCopy, AiOutlineDownload } from 'react-icons/ai';
-import { IoMdCloudDone } from 'react-icons/io';
 import { LuPlus } from 'react-icons/lu';
+import { IoMdCloudDone } from 'react-icons/io';
+import { ProgressBar } from 'react-bootstrap';
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 type FileType = File & { preview?: string };
 
@@ -14,20 +17,44 @@ interface UploadProgress {
 }
 
 const FileUploader: React.FC = () => {
+    const { data: session } = useSession();
+
+    const [isDragging, setIsDragging] = useState<boolean>(false)
+    const [step, setStep] = useState<'initial' | 'verify' | 'uploading' | 'done'>('initial');
+
     const [files, setFiles] = useState<FileType[]>([]);
     const [emailTo, setEmailTo] = useState<string>('');
     const [yourEmail, setYourEmail] = useState<string>('');
     const [title, setTitle] = useState<string>('');
     const [message, setMessage] = useState<string>('');
-    const [isDragging, setIsDragging] = useState<boolean>(false)
+    
     const [uploadProgress, setUploadProgress] = useState<UploadProgress>({})
-    const [step, setStep] = useState<'initial' | 'uploading' | 'done'>('initial');
-    const [downloadFileUrls, setDownloadFileUrls] = useState<string[]>([]);
     const [overallProgress, setOverallProgress] = useState<number>(0)
+
+    const [downloadFileUrls, setDownloadFileUrls] = useState<string[]>([]);
+    
+    const [errorMessage, setErrorMessage] = useState<string>('');
+
+    const [verificationCode, setVerificationCode] = useState<string>('');
+    const [enteredCode, setEnteredCode] = useState<string>('')
+    const [loading, setLoading] = useState<boolean>(false)
+
+    const MAX_FILE_SIZE = 250 * 1024 * 1024; // 250 MB for non-premium users
+    const PREMIUM_MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 MB for signed-in users
+    const PREMIUM_USER_MAX_SIZE = 1024 * 1024 * 1024; // 1 GB for premium users
+
+    const totalFileSize = files.reduce((acc, file) => acc + file.size, 0);
+    // const totalFileSizeInMB = (totalFileSize / 1024 / 1024).toFixed(2); // in mb
+    const isFileSizeExceeded = session?.user?.isPremium
+        ? totalFileSize > PREMIUM_USER_MAX_SIZE
+        : session?.user?.email
+            ? totalFileSize > PREMIUM_MAX_FILE_SIZE
+            : totalFileSize > MAX_FILE_SIZE;
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
         setIsDragging(false)
+        setErrorMessage('');
     }, [])
 
     const onDragEnter = () => setIsDragging(true)
@@ -41,97 +68,69 @@ const FileUploader: React.FC = () => {
         onDragLeave,
     })
 
+    const generateCode = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-    const handleTransfer = async () => {
-        if (files.length === 0) {
-            alert("Please add files to upload.");
-            return;
-        }
-        if (!emailTo || !yourEmail || !title) {
-            alert("Please fill in all required fields");
-            return;
-        }
-
-        setStep("uploading");
-        const totalFiles = files.length;
-        const progressMap = Array(totalFiles).fill(0);
-
+    const handleSendVerificationCode = async () => {
+        setLoading(true);
+        const code = generateCode();
+        setVerificationCode(code);
         try {
-            const uploadPromises = files.map((file, index) =>
-                new Promise<string>(async (resolve, reject) => {
-                    const formData = new FormData();
-                    formData.append("file", file);
-                    formData.append("upload_preset", "file_upload_preset");
+            const response = await fetch('/api/send-verification-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    toEmail: yourEmail,
+                    code: code,
+                }),
+            });
 
-                    const xhr = new XMLHttpRequest();
-                    xhr.open("POST", `https://api.cloudinary.com/v1_1/dzwusi03f/upload`);
-
-                    xhr.upload.onprogress = (event) => {
-                        const progress = Math.round(
-                            (event.loaded * 100) / (event.total || 1)
-                        );
-
-                        progressMap[index] = progress;
-
-                        const overallProgress = Math.round(
-                            progressMap.reduce((acc, curr) => acc + curr, 0) / totalFiles
-                        );
-
-                        setOverallProgress(overallProgress);
-
-                        setUploadProgress((prev) => ({
-                            ...prev,
-                            [file.name]: progress,
-                        }));
-                    };
-
-                    xhr.onload = () => {
-                        if (xhr.status === 200) {
-                            const response = JSON.parse(xhr.responseText);
-                            resolve(response.secure_url);
-                        } else {
-                            reject(xhr.statusText);
-                        }
-                    };
-
-                    xhr.onerror = () => reject("Upload failed");
-                    xhr.send(formData);
-                })
-            );
-
-            const uploadedFiles: string[] = await Promise.all(uploadPromises);
-
-            console.log("Uploaded Files:", uploadedFiles);
-            setDownloadFileUrls(uploadedFiles)
-            setStep("done");
-            setUploadProgress({});
-            setFiles([]);
-            setOverallProgress(0);
+            if (response.ok) {
+                console.log(`code sent to email ${yourEmail}`)
+                setStep("verify")
+            } else {
+                const errorData = await response.json();
+                setErrorMessage(errorData.error || 'Failed to send verification code.');
+            }
         } catch (error) {
-            console.error("Error uploading files:", error);
-            alert("Failed to upload files. Please try again.");
-            setStep("initial");
+            setErrorMessage('Failed to send verification code.');
+            console.log("Error:", error)
+        } finally{
+            setLoading(false)
         }
     };
 
+    const handleVerifyCode = () => {
+        if (enteredCode === verificationCode) {
+            handleTransfer( files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
+        } else {
+            setErrorMessage('Incorrect verification code.');
+        }
+    };
 
-    // // Simulate file upload progress
-    // const handleTransfer = async () => {
-    //     setStep("uploading");
-    //     const files = ["file1", "file2", "file3"]; 
-    //     files.forEach((file, index) => {
-    //         setTimeout(() => {
-    //             setUploadProgress((prevProgress) => ({
-    //                 ...prevProgress,
-    //                 [file]: (index + 1) * 33, 
-    //             }));
-    //         }, index * 1000); 
-    //     });
-    //     setTimeout(() => {
-    //         setStep("done");
-    //         setUploadProgress({});
-    //     }, files.length * 1000 + 1000); 
-    // };
+    const handleTransferClick = () => {
+        if (isFileSizeExceeded) {
+            let limitMessage = '';
+            if (session?.user?.isPremium) {
+                limitMessage = `Total file size exceeds the 1 GB limit for premium users.`;
+            } else if (session?.user?.email) {
+                limitMessage = `Total file size exceeds the 500 MB limit for signed-in users upgrade to premium to access more limit.`;
+            } else {
+                limitMessage = `Total file size exceeds the 250 MB limit for non-logged-in users.`;
+            }
+            setErrorMessage(limitMessage);
+            console.log(limitMessage)
+            return;
+        }
+
+        if (!session?.user) {
+            handleSendVerificationCode(); // send the verification code
+            return;
+        }
+
+        handleTransfer( files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
+    }
 
     const removeFile = (fileName: string) => {
         setFiles((files) => files.filter((file) => file.name !== fileName))
@@ -177,6 +176,23 @@ const FileUploader: React.FC = () => {
                                     <span className="font-semibold">{files.length > 0 ? 'Add more files' : 'Add files'}</span>
                                     <span className="block text-sm text-gray-500 underline">{files.length === 0 ? 'Or select a folder' : ''}</span>
                                 </div>
+                                {/* <div className="relative">
+                                    <AiOutlineInfoCircle
+                                        className="text-gray-500 cursor-pointer hover:text-gray-700"
+                                        size={20}
+                                        onClick={() => setErrorMessage('Click to login and upgrade to increase the file limit.')}
+                                        title="Click to see options"
+                                    />
+                                    {errorMessage && (
+                                        <div className="absolute top-6 left-0 bg-white shadow-lg p-2 text-sm text-gray-700 rounded-md">
+                                            {session?.user?.email
+                                                ? session?.user?.isPremium
+                                                    ? 'Upgrade to premium for 1 GB file limit'
+                                                    : 'Login to extend your file size limit to 500 MB.'
+                                                : 'Login to extend file size limit to 500 MB.'}
+                                        </div>
+                                    )}
+                                </div> */}
                             </div>
                             <div className="mb-4">
                                 {files.map((file) => (
@@ -186,13 +202,6 @@ const FileUploader: React.FC = () => {
                                             className="text-slate-950 cursor-pointer"
                                             onClick={() => removeFile(file.name)}
                                         />
-                                        {/* {uploadProgress[file.name] && (
-                                            <ProgressBar
-                                                now={uploadProgress[file.name]}
-                                                label={`${uploadProgress[file.name]}%`}
-                                                className="w-full bg-gray-300 text-xs text-gray-700"
-                                            />
-                                        )} */}
                                     </div>
                                 ))}
                             </div>
@@ -200,10 +209,11 @@ const FileUploader: React.FC = () => {
                                 <input
                                     type="email"
                                     placeholder="Your email"
-                                    value={yourEmail}
+                                    value={session?.user?.email || yourEmail}
                                     onChange={(e) => setYourEmail(e.target.value)}
                                     className="w-full p-2 border-b border-gray-400 focus:outline-none"
                                     required
+                                    disabled={!!session?.user}
                                 />
                                 <input
                                     type="email"
@@ -233,10 +243,30 @@ const FileUploader: React.FC = () => {
                     <div className="p-5 pt-4">
                         <button
                             className="w-full py-3 bg-gray-700 text-white text-sm uppercase tracking-wider rounded"
-                            onClick={handleTransfer}
+                            onClick={handleTransferClick}
+                            disabled={loading}
                         >
-                            Transfer
+                            {loading ? "sending..." : "Transfer"}
                         </button>
+                    </div>
+                </div>
+            )}
+            {step === 'verify' && (
+                <div className="w-full max-w-[300px] p-5 bg-white shadow-lg rounded-md cursor-pointer">
+                    <div className="box-data-container p-1 h-[310px] overflow-y-auto">
+                        <div className="flex flex-col items-center justify-center min-h-[341px] text-center">
+                            <p>A verification code has been sent to your email.</p>
+                            <input
+                                type="text"
+                                value={enteredCode}
+                                onChange={(e) => setEnteredCode(e.target.value)}
+                                placeholder="Enter the verification code"
+                                required
+                            />
+                            <button onClick={handleVerifyCode}>Verify Code</button>
+                            {errorMessage && <p>{errorMessage}</p>}
+                            <p>Or One Click Login for hassle-free experience <span onClick={() => signIn("google")}>Log In</span></p>
+                        </div>
                     </div>
                 </div>
             )}
@@ -244,12 +274,18 @@ const FileUploader: React.FC = () => {
                 <div className="w-full max-w-[300px] p-5 bg-white shadow-lg rounded-md cursor-pointer">
                     <div className="box-data-container p-1 h-[310px] overflow-y-auto">
                         <div className="flex flex-col items-center justify-center min-h-[341px] text-center">
-                            <ProgressBar
-                                now={overallProgress}
-                                label={`${Math.round(overallProgress)}%`}
-                                className="w-full bg-gray-300 text-xs text-gray-700 mb-4"
-                            />
-                            {/* <div className="w-16 h-16 border-4 border-gray-700 rounded-full animate-spin mb-4"></div> */}
+                            <div className="w-24 h-24 mb-4">
+                                <CircularProgressbar
+                                    value={overallProgress}
+                                    text={`${Math.round(overallProgress)}%`}
+                                    styles={buildStyles({
+                                        textSize: "14px",
+                                        pathColor: "#020617",
+                                        textColor: "#020617",
+                                        trailColor: "#d6d6d6",
+                                    })}
+                                />
+                            </div>
                             <p className="mb-4">Uploading...</p>
                             <div className="w-full max-h-40 overflow-y-auto space-y-2">
                                 {Object.keys(uploadProgress).map((fileName) => (
@@ -258,7 +294,7 @@ const FileUploader: React.FC = () => {
                                         <ProgressBar
                                             now={uploadProgress[fileName]}
                                             label={`${uploadProgress[fileName]}%`}
-                                            className="w-full bg-gray-300 text-xs text-gray-700"
+                                            className="w-full bg-gray-300 text-xs text-slate-950"
                                         />
                                     </div>
                                 ))}

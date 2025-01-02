@@ -23,7 +23,8 @@ export default NextAuth({
                 await User.create({
                     name: user.name,
                     email: user.email,
-                    image: user.image
+                    image: user.image,
+                    isPremium: false,
                 })
             }
             return true;
@@ -33,11 +34,13 @@ export default NextAuth({
 
             const user = await User.findOne({ email: token.email });
             session.user = user;
+            session.user.isPremium = user.isPremium;
             return session;
         },
         async jwt({ token, user }){
             if(user) {
                 token.email = user.email;
+                token.isPremium = user.isPremium;
             }
             return token;
         },
