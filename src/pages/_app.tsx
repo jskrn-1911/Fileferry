@@ -8,6 +8,7 @@ import { SessionProvider } from 'next-auth/react'
 import Head from "next/head";
 import { useRouter } from "next/router";
 import GlobalLoader from "@/components/GlobalLoader";
+import BottomToggle from "@/components/BottomToggle";
 
 export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const [background, setBackground] = useState<string>("")
@@ -51,6 +52,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
             {loading && <GlobalLoader />}
             <Component {...pageProps} />
           </main>
+          <BottomToggle />
         </div>
       </AppProvider>
     </SessionProvider>
