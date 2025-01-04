@@ -4,8 +4,18 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-      <meta name="google-adsense-account" content="ca-pub-8204802433512401" />
-      <script
+        <meta name="google-adsense-account" content="ca-pub-8204802433512401" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8204802433512401"
+          crossOrigin="anonymous"
+        ></script>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+          crossOrigin="anonymous"
+        ></script>
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
@@ -13,11 +23,11 @@ export default function Document() {
               "@type": "Organization",
               name: "FileFerry",
               url: "https://fileferry.vercel.app",
-              logo: "https://fileferry.vercel.app/logo.png", 
+              logo: "https://fileferry.vercel.app/logo.png",
               sameAs: [
                 "https://www.facebook.com/FileFerry",
                 "https://twitter.com/FileFerry",
-                "https://www.linkedin.com/company/fileferry" 
+                "https://www.linkedin.com/company/fileferry"
               ],
               contactPoint: {
                 "@type": "ContactPoint",
