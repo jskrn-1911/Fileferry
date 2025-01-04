@@ -103,6 +103,7 @@ const FileUploader: React.FC = () => {
 
     const handleVerifyCode = () => {
         if (enteredCode === verificationCode) {
+
             handleTransfer(files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
         } else {
             setErrorMessage('Incorrect verification code.');
@@ -129,12 +130,14 @@ const FileUploader: React.FC = () => {
             return;
         }
 
+        const emailToUse = yourEmail || session?.user?.email || ''; 
+
         if (!yourEmail) {
-            console.log("your email is not entered.")
-            // setYourEmail(session?.user?.email)
+            console.log("your email is not entered.", emailToUse);
+            setYourEmail(emailToUse);
         }
 
-        handleTransfer(files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
+        handleTransfer(files, emailTo, yourEmail || emailToUse, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
     }
 
     const removeFile = (fileName: string) => {
