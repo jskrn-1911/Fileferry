@@ -4,6 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+      <meta name="google-adsense-account" content="ca-pub-8204802433512401" />
       <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
