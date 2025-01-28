@@ -105,6 +105,7 @@ const FileUploader: React.FC = () => {
         if (enteredCode === verificationCode) {
 
             handleTransfer(files, emailTo, yourEmail, title, setStep, setOverallProgress, setUploadProgress, setDownloadFileUrls, setFiles,)
+            setEnteredCode("");
         } else {
             setErrorMessage('Incorrect verification code.');
         }
@@ -265,13 +266,14 @@ const FileUploader: React.FC = () => {
                         <div className="flex flex-col items-center justify-center min-h-[341px] text-center">
                             <p>A verification code has been sent to your email.</p>
                             <input
+                                className='border-b border-gray-400'
                                 type="text"
                                 value={enteredCode}
                                 onChange={(e) => setEnteredCode(e.target.value)}
                                 placeholder="Enter the verification code"
                                 required
                             />
-                            <button onClick={handleVerifyCode}>Verify Code</button>
+                            <button className='bg-slate-900 text-white p-2 m-2 rounded-sm' onClick={handleVerifyCode}>Verify Code</button>
                             {errorMessage && <p>{errorMessage}</p>}
                             <p>Or One Click Login for hassle-free experience <span onClick={() => signIn("google")}>Log In</span></p>
                         </div>
